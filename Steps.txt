@@ -1,3 +1,4 @@
+adding code to repository
 Create two ec2 in AWS   
 create java application on one server 
 Deploy the java application on other application --  do not copy the source code on another ec2 Application 
@@ -5,7 +6,8 @@ Deploy the java application on other application --  do not copy the source code
 
 Details steps for dev server  
 
-sudo dnf install java-17-amazon-corretto-headless -y
+
+
 
 Command to copy java file from local machine to ec2 dev machine   
 scp -i test_key.pem "/c/HarishKemkar/local_repo/JAVA project/MyApp.java" ec2-user@15.206.68.112:~/java_application/
