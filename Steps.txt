@@ -1,0 +1,90 @@
+Create two ec2 in AWS   
+create java application on one server 
+Deploy the java application on other application --  do not copy the source code on another ec2 Application 
+
+
+Details steps for dev server  
+
+sudo dnf install java-17-amazon-corretto-headless -y
+
+Command to copy java file from local machine to ec2 dev machine   
+scp -i test_key.pem "/c/HarishKemkar/local_repo/JAVA project/MyApp.java" ec2-user@15.206.68.112:~/java_application/
+
+
+how to ins
+
+INStall maven on ec2 (Build server)
+sudo dnf install maven -y
+
+Create maven project structure  
+
+mvn archetype:generate -DgroupId=com.myapp \
+    -DartifactId=myapp \
+    -DarchetypeArtifactId=maven-archetype-quickstart \
+    -DinteractiveMode=false
+
+place your code  for maven  
+
+ mv /home/ec2-user/java_application/MyApp.java /home/ec2-user/java_application/myapp/src/main/java/com/myapp/
+
+
+
+
+
+mvn clean package
+
+transfer binary 
+scp -i target_key.pem target/myapp.jar ec2-user@<target-ec2-ip>:~/java_application/
+
+
+install jre on ec2 server 
+
+run the aplication 
+java -jar ~/java_application/myapp.jar
+
+
+
+*** Steps from co pilot --    
+
+. Build the JAR
+From inside the myapp directory:
+cd ~/myapp
+mvn clean package
+
+
+Output will be in:
+target/myapp-1.0-SNAPSHOT.jar
+
+
+
+5. Run the Application
+java -cp target/myapp-1.0-SNAPSHOT.jar com.myapp.MyApp
+java -cp target/myapp-1.0-SNAPSHOT.jar com.myapp.MyApp
+
+- java
+- This invokes the Java runtime (JVM).
+- It’s the program that executes compiled .class files.
+- -cp target/myapp-1.0-SNAPSHOT.jar
+- -cp means classpath.
+- The classpath tells Java where to look for compiled classes and resources.
+- Here, you’re saying: “Look inside the JAR file target/myapp-1.0-SNAPSHOT.jar for my classes.”
+- 👉 Without this, Java wouldn’t know where to find com.myapp.MyApp.
+- com.myapp.MyApp
+- This is the fully qualified class name (FQCN).
+- It means: run the class MyApp inside the package com.myapp.
+- Java looks inside the JAR, finds com/myapp/MyApp.class, and executes its main() method.
+
+
+
+6. Deploy to Another EC2
+Copy only the JAR (not source code):
+scp -i target_key.pem target/myapp-1.0-SNAPSHOT.jar ec2-user@<target-ec2-ip>:~/java_application/
+
+
+On the target EC2:
+java -cp ~/java_application/myapp-1.0-SNAPSHOT.jar com.myapp.MyApp
+
+
+
+👉 This way, you build once on EC2 #1, and deploy only the artifact to EC2 #2.
+Would you like me to also show you how to make the JAR executable with java -jar (instead of specifying the class name), so it runs more cleanly like a standalone app
