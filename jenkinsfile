@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+
+    environment {
+        BUILD_SERVER_IP = "13.235.99.179"
+        DEPLOY_SERVER_IP = "13.201.59.100"
+        BUILD_DIR = "/home/ec2-user/java_project"
+        DEPLOY_DIR = "/home/ec2-user/app"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/harishkemkar/java_project.git'
+            }
+        }
+
+        stage('Build on Build Server') {
+            steps {
+                sshagent (credentials: ['build-server-key']) {
+                    sh '''
+                    ssh -o StrictHostKeyChecking=no ec2-user@${BUILD_SERVER_IP} \
+                    "cd ${BUILD_DIR} && git pull && mvn clean package"
+                    '''
+                }
+            }
+        }
+
+        stage('Copy JAR to Deployment Server') {
+            steps {
+                sshagent (credentials: ['deploy-server-key']) {
+                    sh '''
+                    scp -o StrictHostKeyChecking=no \
+                    ec2-user@${BUILD_SERVER_IP}:${BUILD_DIR}/target/myapp-1.0-SNAPSHOT.jar \
+                    ec2-user@${DEPLOY_SERVER_IP}:${DEPLOY_DIR}/
+                    '''
+                }
+            }
+        }
+
+        stage('Run on Deployment Server') {
+            steps {
+                sshagent (credentials: ['deploy-server-key']) {
+                    sh '''
+                    ssh -o StrictHostKeyChecking=no ec2-user@${DEPLOY_SERVER_IP} \
+                    "cd ${DEPLOY_DIR} && nohup java -jar myapp-1.0-SNAPSHOT.jar > app.log 2>&1 &"
+                    '''
+                }
+            }
+        }
+    }
+}

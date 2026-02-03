@@ -90,3 +90,26 @@ java -cp ~/java_application/myapp-1.0-SNAPSHOT.jar com.myapp.MyApp
 
 👉 This way, you build once on EC2 #1, and deploy only the artifact to EC2 #2.
 Would you like me to also show you how to make the JAR executable with java -jar (instead of specifying the class name), so it runs more cleanly like a standalone app
+
+
+
+**** Steps to add .pem files in jenkins credentials   
+
+teps to Add .pem Files in Jenkins Credentials
+- Open Jenkins Dashboard
+- Go to Manage Jenkins → Credentials.
+- Choose a Credentials Store
+- Usually you’ll see (global) under “Stores scoped to Jenkins.”
+- Click on (global) → Add Credentials.
+- Select Credential Type
+- From the dropdown, choose SSH Username with private key.
+- Fill in the Details
+- Username: ec2-user (since that’s your SSH user).
+- Private Key: select Enter directly and paste the contents of your .pem file (e.g., test-key.pem).
+- ID: give it a clear name like build-server-key.
+- Description: optional, e.g., “Key for Build EC2”.
+- Save
+- Repeat the same for your deployment server key (javaserv2.pem), with ID like deploy-server-key.
+
+
+
