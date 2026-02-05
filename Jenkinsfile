@@ -81,7 +81,7 @@ EOF
                         ssh -o StrictHostKeyChecking=no ec2-user@${BUILD_SERVER_IP} << 'EOF'
                         cd ${BUILD_DIR}/myapp
                         mvn clean package
-                        EOF
+EOF
                     """
                 }
             }
