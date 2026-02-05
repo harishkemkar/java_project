@@ -35,7 +35,7 @@ pipeline {
                         if [ -f "${BUILD_DIR}/MyApp.java" ]; then
                           mv ${BUILD_DIR}/MyApp.java ${BUILD_DIR}/myapp/src/main/java/com/myapp/
                         fi
-                        EOF
+EOF
                     """
                 }
             }
@@ -68,7 +68,7 @@ pipeline {
                             <\\/plugins>\\n\
                           <\\/build>' pom.xml
                         fi
-                        EOF
+EOF
                     """
                 }
             }
