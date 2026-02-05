@@ -3,7 +3,9 @@ pipeline {
 
     environment {
         BUILD_SERVER_IP = "13.201.126.151"
+        DEPLOY_SERVER_IP = "3.108.227.85"
         BUILD_DIR = "/home/ec2-user/java_application"
+        DEPLOY_DIR = "/home/ec2-user/java_application"
     }
 
     stages {
@@ -18,11 +20,9 @@ pipeline {
                 sshagent (credentials: ['build-server-key']) {
                     sh """
                         ssh -o StrictHostKeyChecking=no ec2-user@${BUILD_SERVER_IP} << 'EOF'
-                        # Ensure build directory exists
                         mkdir -p ${BUILD_DIR}
                         cd ${BUILD_DIR}
 
-                        # Create Maven project structure if not already present
                         if [ ! -d "${BUILD_DIR}/myapp" ]; then
                           mvn archetype:generate \
                             -DgroupId=com.myapp \
@@ -31,7 +31,6 @@ pipeline {
                             -DinteractiveMode=false
                         fi
 
-                        # Move your existing Java file into the correct package
                         if [ -f "${BUILD_DIR}/MyApp.java" ]; then
                           mv ${BUILD_DIR}/MyApp.java ${BUILD_DIR}/myapp/src/main/java/com/myapp/
                         fi
@@ -48,7 +47,6 @@ EOF
                         ssh -o StrictHostKeyChecking=no ec2-user@${BUILD_SERVER_IP} << 'EOF'
                         cd ${BUILD_DIR}/myapp
 
-                        # If pom.xml exists, inject compiler plugin for Java 17
                         if grep -q '<artifactId>maven-compiler-plugin</artifactId>' pom.xml; then
                           sed -i 's/<source>[0-9]*<\\/source>/<source>17<\\/source>/g' pom.xml
                           sed -i 's/<target>[0-9]*<\\/target>/<target>17<\\/target>/g' pom.xml
@@ -87,14 +85,15 @@ EOF
             }
         }
 
-        stage('Archive Artifact') {
+        stage('Deploy JAR Directly to Production') {
             steps {
                 sshagent (credentials: ['build-server-key']) {
                     sh """
-                        scp -o StrictHostKeyChecking=no ec2-user@${BUILD_SERVER_IP}:${BUILD_DIR}/myapp/target/myapp-1.0-SNAPSHOT.jar .
+                        ssh -o StrictHostKeyChecking=no ec2-user@${BUILD_SERVER_IP} << 'EOF'
+                        scp -o StrictHostKeyChecking=no ${BUILD_DIR}/myapp/target/myapp-1.0-SNAPSHOT.jar ec2-user@${DEPLOY_SERVER_IP}:${DEPLOY_DIR}/
+EOF
                     """
                 }
-                archiveArtifacts artifacts: 'myapp-1.0-SNAPSHOT.jar', fingerprint: true
             }
         }
     }
