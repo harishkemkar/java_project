@@ -6,6 +6,7 @@ pipeline {
         DEPLOY_SERVER_IP = "3.108.227.85"
         BUILD_DIR = "/home/ec2-user/java_application"
         DEPLOY_DIR = "/home/ec2-user/java_application"
+        APP_JAR = "myapp-1.0-SNAPSHOT.jar"
     }
 
     stages {
@@ -85,13 +86,22 @@ EOF
             }
         }
 
-        stage('Deploy JAR Directly to Production') {
+        stage('Archive Artifact') {
             steps {
                 sshagent (credentials: ['build-server-key']) {
                     sh """
-                        ssh -o StrictHostKeyChecking=no ec2-user@${BUILD_SERVER_IP} << 'EOF'
-                        scp -o StrictHostKeyChecking=no ${BUILD_DIR}/myapp/target/myapp-1.0-SNAPSHOT.jar ec2-user@${DEPLOY_SERVER_IP}:${DEPLOY_DIR}/
-EOF
+                        scp -o StrictHostKeyChecking=no ec2-user@${BUILD_SERVER_IP}:${BUILD_DIR}/myapp/target/${APP_JAR} .
+                    """
+                }
+                archiveArtifacts artifacts: "${APP_JAR}", fingerprint: true
+            }
+        }
+
+        stage('Deploy JAR to Production') {
+            steps {
+                sshagent (credentials: ['build-server-key']) {
+                    sh """
+                        scp -o StrictHostKeyChecking=no ${APP_JAR} ec2-user@${DEPLOY_SERVER_IP}:${DEPLOY_DIR}/
                     """
                 }
             }
