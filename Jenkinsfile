@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        BUILD_SERVER_IP = "3.110.157.209"
+        BUILD_SERVER_IP = "43.205.114.143"
         DEPLOY_SERVER_IP = "3.110.157.209"
         BUILD_DIR = "/home/ec2-user/java_application"
         DEPLOY_DIR = "/home/ec2-user/app"
