@@ -1,0 +1,33 @@
+Steps for startup -- 
+
+INStall maven on ec2 (Build server)
+sudo dnf install maven -y
+
+
+i want to create a jenkins pipe line  
+which will be places in this repo-  
+https://github.com/harishkemkar/java_project
+
+and build my  java application on ec2 server  which is on IP -  35.154.84.244
+
+These are the installed on ec2 build server -  
+Git version: git version 2.50.1
+Java version:
+openjdk version "17.0.17" 2025-10-21 LTS
+Maven version: Apache Maven 3.8.4 (Red Hat 3.8.4-3.amzn2023.0.5)
+
+pom  file is not  present in repo and neither on servr 
+
+so create maven project structure and place .java file at relevant location 
+
+some thing like below 
+Create maven project structure  
+
+mvn archetype:generate -DgroupId=com.myapp \
+    -DartifactId=myapp \
+    -DarchetypeArtifactId=maven-archetype-quickstart \
+    -DinteractiveMode=false
+
+place your code  for maven  
+
+mv /home/ec2-user/java_application/MyApp.java /home/ec2-user/java_application/myapp/src/main/java/com/myapp/
