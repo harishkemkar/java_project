@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        BUILD_SERVER_IP = "13.235.99.179"
-        DEPLOY_SERVER_IP = "13.201.59.100"
+        BUILD_SERVER_IP = "3.109.217.220"
+        DEPLOY_SERVER_IP = "3.110.157.209"
         BUILD_DIR = "/home/ec2-user/java_project"
         DEPLOY_DIR = "/home/ec2-user/app"
     }
@@ -28,7 +28,7 @@ pipeline {
 
         stage('Copy JAR to Deployment Server') {
             steps {
-                sshagent (credentials: ['deploy-server-key']) {
+                sshagent (credentials: ['Deploy-server-key']) {
                     sh '''
                     scp -o StrictHostKeyChecking=no \
                     ec2-user@${BUILD_SERVER_IP}:${BUILD_DIR}/target/myapp-1.0-SNAPSHOT.jar \
