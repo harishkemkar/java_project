@@ -4,7 +4,7 @@ pipeline {
     environment {
         BUILD_SERVER_IP = "3.109.217.220"
         DEPLOY_SERVER_IP = "3.110.157.209"
-        BUILD_DIR = "/home/ec2-user/java_project"
+        BUILD_DIR = "/home/ec2-user/java_application"
         DEPLOY_DIR = "/home/ec2-user/app"
     }
 
