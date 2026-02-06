@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        BUILD_SERVER_IP = "65.1.2.52"
-        DEPLOY_SERVER_IP = "65.2.181.18"
+        BUILD_SERVER_IP = "13.126.94.137"
+        DEPLOY_SERVER_IP = "65.0.18.21033333333336"
         BUILD_DIR = "/home/ec2-user/java_application"
         DEPLOY_DIR = "/home/ec2-user/java_application"
         APP_JAR = "myapp-1.0-SNAPSHOT.jar"
@@ -48,25 +48,6 @@ EOF
                         ssh -o StrictHostKeyChecking=no ec2-user@${BUILD_SERVER_IP} << 'EOF'
                         cd ${BUILD_DIR}/myapp
 
-                        if grep -q '<artifactId>maven-compiler-plugin</artifactId>' pom.xml; then
-                          sed -i 's/<source>[0-9]*<\\/source>/<source>17<\\/source>/g' pom.xml
-                          sed -i 's/<target>[0-9]*<\\/target>/<target>17<\\/target>/g' pom.xml
-                        else
-                          sed -i '/<\\/project>/i \
-                          <build>\\n\
-                            <plugins>\\n\
-                              <plugin>\\n\
-                                <groupId>org.apache.maven.plugins<\\/groupId>\\n\
-                                <artifactId>maven-compiler-plugin<\\/artifactId>\\n\
-                                <version>3.8.1<\\/version>\\n\
-                                <configuration>\\n\
-                                  <source>17<\\/source>\\n\
-                                  <target>17<\\/target>\\n\
-                                <\\/configuration>\\n\
-                              <\\/plugin>\\n\
-                            <\\/plugins>\\n\
-                          <\\/build>' pom.xml
-                        fi
 EOF
                     """
                 }
