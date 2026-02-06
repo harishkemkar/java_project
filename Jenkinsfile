@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        BUILD_SERVER_IP = "13.201.126.151"
-        DEPLOY_SERVER_IP = "3.108.227.85"
+        BUILD_SERVER_IP = "65.1.2.52"
+        DEPLOY_SERVER_IP = "65.2.181.18"
         BUILD_DIR = "/home/ec2-user/java_application"
         DEPLOY_DIR = "/home/ec2-user/java_application"
         APP_JAR = "myapp-1.0-SNAPSHOT.jar"
@@ -31,7 +31,7 @@ pipeline {
                             -DarchetypeArtifactId=maven-archetype-quickstart \
                             -DinteractiveMode=false
                         fi
-
+*
                         if [ -f "${BUILD_DIR}/MyApp.java" ]; then
                           mv ${BUILD_DIR}/MyApp.java ${BUILD_DIR}/myapp/src/main/java/com/myapp/
                         fi
